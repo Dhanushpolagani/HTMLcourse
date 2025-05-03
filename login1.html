@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Login Page with Jasmine Tests</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jasmine-core@latest/lib/jasmine-core/jasmine.css">
+</head>
+<body>
+
+  <h2>Registration Form</h2>
+  <form onsubmit="return handleLogin()">
+    <label>Name:</label>
+    <input type="text" id="name"><br><br>
+
+    <label>Email:</label>
+    <input type="email" id="email"><br><br>
+
+    <label>Password:</label>
+    <input type="password" id="password"><br><br>
+
+    <input type="submit" value="Register">
+  </form>
+
+  <p id="message"></p>
+
+  <hr>
+  <h3>Jasmine Test Results:</h3>
+
+  <!-- Jasmine Framework Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/jasmine-core@latest/lib/jasmine-core/jasmine.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jasmine-core@latest/lib/jasmine-core/jasmine-html.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jasmine-core@latest/lib/jasmine-core/boot0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jasmine-core@latest/lib/jasmine-core/boot1.js"></script>
+
+  <!-- Validation Logic -->
+  <script>
+    function validateLogin(name, email, password) {
+      if (!name.trim()) return "Name is required.";
+      if (!email.trim() || !email.includes("@")) return "Valid email is required.";
+      if (!password || password.length < 6) return "Password must be at least 6 characters.";
+      return "Success";
+    }
+
+    function handleLogin() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("message");
+
+      const result = validateLogin(name, email, password);
+      if (result === "Success") {
+        message.innerText = "Registration successful!";
+        message.style.color = "green";
+      } else {
+        message.innerText = result;
+        message.style.color = "red";
+      }
+
+      return false; // Prevent form submission
+    }
+  </script>
+
+  <!-- Jasmine Test Cases -->
+  <script>
+    describe("Registration Validation Tests", function() {
+
+      it("should return success for valid name, email, and password", function() {
+        expect(validateLogin("John", "john@example.com", "secret123")).toBe("Success");
+      });
+
+      it("should return error for empty name", function() {
+        expect(validateLogin("", "john@example.com", "secret123")).toBe("Name is required.");
+      });
+
+      it("should return error for empty email", function() {
+        expect(validateLogin("John", "", "secret123")).toBe("Valid email is required.");
+      });
+
+      it("should return error for invalid email", function() {
+        expect(validateLogin("John", "johnexample.com", "secret123")).toBe("Valid email is required.");
+      });
+
+      it("should return error for short password", function() {
+        expect(validateLogin("John", "john@example.com", "123")).toBe("Password must be at least 6 characters.");
+      });
+
+      it("should trim spaces in name and still succeed", function() {
+        expect(validateLogin("  John  ", "john@example.com", "secret123")).toBe("Success");
+      });
+
+    });
+  </script>
+
+</body>
+</html>
